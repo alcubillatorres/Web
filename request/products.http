@@ -1,0 +1,44 @@
+@api = http://localhost:4000/products
+
+GET {{api}}
+
+###Guardar en Perfil
+POST {{api}}
+Content-Type: application/json
+
+{
+    "NombrePerfil": "Mi nombre",
+    "ArmedForces": "si",
+    "Bussines": "no",
+    "Charitable": "si",
+    "SitesPermited": "www.google.com"   
+}
+
+###guardar un producto en la bd
+POST {{api}}
+Content-Type: application/json
+
+{
+    "Name": "Nuevo",
+    "Description": "Nuevo para hogar",
+    "Quantity": 130
+}
+
+###get a product by id
+GET {{api}}/7
+
+###Delete one product by id
+DELETE  {{api}}/333
+
+###contar productos
+GET {{api}}/count
+
+###actualizar uno
+PUT {{api}}/7
+Content-Type: application/json
+
+{
+    "Name": "Laptop HP",
+    "Description": "HP laptop gamming",
+    "Quantity": 12
+}
