@@ -1,0 +1,68 @@
+.table1 {
+    max-width: fit-content;
+}
+
+.container {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.image-title {
+    height: 60px;
+}
+
+.bg-blue{
+    background-color: #BBDEFB !important;
+    padding: 0.5px !important;
+    max-width: 250px !important;
+}
+
+.form-control{
+    padding: 0.5px !important;
+    width: auto !important;
+    font-family: 'Open Sans', sans-serif;
+}
+
+label{
+    font-weight: bold;
+}
+
+textarea{
+    border-color: rgb(141, 202, 139) !important;
+    overflow-y:scroll;
+}
+
+input{
+    max-height: 30px;
+}
+
+#plus{
+    border-color: rgb(108,155,194) !important;
+    background-color: #6c9bc2 !important;
+    font-size: 20px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.redd{
+    width: 100px;
+    height: 100px;
+    background: red;
+}
+
+.red2{
+    width: 100px;
+    height: 100px;
+    background: blue;
+}
+
+button{
+    min-width: 60px;
+}
+
+select{
+    width: auto !important;
+}
+
+label{
+    margin-bottom: 0px !important;
+}
