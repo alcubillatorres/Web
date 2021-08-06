@@ -66,3 +66,36 @@ select{
 label{
     margin-bottom: 0px !important;
 }
+
+table{
+    
+    border-collapse: collapse;
+    border-radius: 1em;
+    overflow: hidden;
+}
+
+td, tr, th {
+    text-align: center;
+    vertical-align: middle;
+    padding: .3em;
+    background: rgb(206, 232, 250);
+    border-bottom: 2px solid white; 
+    border-left: 2px solid white; 
+  }
+
+  .tc-img{
+      display: none;
+      color: rgb(80, 137, 177);
+      font-size: .7rem;
+  }
+
+  .form-control:hover + .tc-img,
+  .form-control:focus + .tc-img {
+    display: block;
+  }
+
+  .select-control select:focus + .tc-img ,
+  .select-control select:hover + .tc-img
+  {
+    display: block;
+  }
