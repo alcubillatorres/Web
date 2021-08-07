@@ -81,6 +81,7 @@ td, tr, th {
     background: rgb(206, 232, 250);
     border-bottom: 2px solid white; 
     border-left: 2px solid white; 
+    font-size: .8rem;
   }
 
   .tc-img{
