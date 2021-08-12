@@ -10,7 +10,7 @@ class App extends Component {
       TipoInterface: "",
       Alias: "",
       Servicio: "",
-      RutaDefault: true,
+      RutaDefault: false,
       NextHop: "",
       RutasEstaticas: [],
       RedRutaEstatica: [],
@@ -203,7 +203,6 @@ class App extends Component {
         RutasEstaticas: [...prevState.RutasEstaticas, row],
         RedRutaEstatica: "",
         MascaraRutaEstatica: "",
-        NextHopRutaEstatica: "",
       };
     });
   };
@@ -385,15 +384,7 @@ class App extends Component {
                 </div>
 
                 <div className="mb-2">
-                  {this.state.Servicio === "MPLS" && (
-                    <span>
-                      {this.state.RutaDefault === false && (
-                        <span>
-                          <hr></hr>
-                        </span>
-                      )}
-                    </span>
-                  )}
+                 
 
                   <label>Servicio</label>
                   <select
@@ -406,123 +397,6 @@ class App extends Component {
                     <option value="INTERNET">INTERNET</option>
                   </select>
                 </div>
-
-                {this.state.Servicio !== "" && (
-                  <span>
-                    <div className="mb-2 d-flex align-items-center">
-                      &emsp;&emsp;
-                      <input
-                        type="checkbox"
-                        onChange={this.handleRutaDefault}
-                        defaultChecked={this.state.RutaDefault}
-                      />
-                      {this.state.RutaDefault === true && (
-                        <label>&ensp;Generar Ruta Estática Default</label>
-                      )}
-                      {this.state.RutaDefault === false && (
-                        <label className="label-light">
-                          &ensp;Generar Ruta Estática Default
-                        </label>
-                      )}
-                    </div>
-                    {this.state.RutaDefault === true && (
-                      <span>
-                        <div className="mb-2 d-flex align-items-center">
-                          &emsp;&emsp;
-                          <label>Next-hop</label>
-                          <input
-                            className="form-control ml-2"
-                            type="text"
-                            value={this.state.NextHop}
-                            onChange={this.handleNextHop}
-                            placeholder="xxx.xxx.xxx.xxx"
-                            required
-                          />
-                        </div>
-                      </span>
-                    )}
-
-                    {this.state.Servicio === "MPLS" && (
-                      <span>
-                        {this.state.RutaDefault === false && (
-                          <span>
-                            <div className="row">
-                              <div className="col-5">
-                                <div className="mb-2 d-flex align-items-center">
-                                  &emsp;&emsp;
-                                  <label>Red</label>
-                                  <input
-                                    className="form-control ml-2"
-                                    type="text"
-                                    value={this.state.RedRutaEstatica}
-                                    onChange={this.handleRedRutaEstatica}
-                                    placeholder="xxx.xxx.xxx.xxx"
-                                  />
-                                </div>
-
-                                <div className="mb-2 d-flex align-items-center">
-                                  &emsp;&emsp;
-                                  <label>Máscara de Red</label>
-                                  <input
-                                    className="form-control ml-2"
-                                    type="text"
-                                    value={this.state.MascaraRutaEstatica}
-                                    onChange={this.handleMascaraRutaEstatica}
-                                    placeholder="xxx.xxx.xxx.xxx"
-                                  />
-                                </div>
-
-                                <div className="mb-2 d-flex align-items-center">
-                                  &emsp;&emsp;
-                                  <label>Next-hop</label>
-                                  <input
-                                    className="form-control ml-2"
-                                    type="text"
-                                    value={this.state.NextHopRutaEstatica}
-                                    onChange={this.handleNextHopRutaEstatica}
-                                    placeholder="xxx.xxx.xxx.xxx"
-                                  />
-                                </div>
-
-                                <div className="row justify-content-center">
-                                  <div className="col text-center">
-                                    <button
-                                      className="m-1 p-1 btn btn-outline-primary"
-                                      onClick={this.handleAddRow}
-                                    >
-                                      Generar
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="col size-small">
-                                {this.state.RutasEstaticas.length !== 0 && (
-                                  <span>
-                                    <div className="size-bold">
-                                      Redes Estáticas Registradas
-                                    </div>
-                                    {this.state.RutasEstaticas.map(
-                                      (ruta, i) => {
-                                        return (
-                                          <div key={i}>
-                                            {" "}
-                                            Red = {ruta.red} Máscara ={" "}
-                                            {ruta.mascara} Next-hop = {ruta.hop}
-                                          </div>
-                                        );
-                                      }
-                                    )}
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                            <hr></hr>
-                          </span>
-                        )}
-                      </span>
-                    )}
-                  </span>
-                )}
 
                 <div className="mb-2">
                   <label>Tipo de IP</label>
@@ -587,6 +461,156 @@ class App extends Component {
                     required
                   />
                 </div>
+                {this.state.Servicio === "INTERNET" && (
+                    <span>
+                      {this.state.TipoIP === "DHCP" && (
+                        <span>
+                         
+                        </span>
+                      )}
+                    </span>
+                  )}
+
+                <hr></hr>
+              
+                <div className="mb-2 d-flex align-items-center">
+                  <label>CONFIGURACION DE RUTEO</label>
+                </div>
+
+                {this.state.Servicio !== "" && (
+                  <span>
+                    {this.state.TipoIP !== "DHCP" && (
+                      <div className="mb-2 d-flex align-items-center">
+                      
+                        <input
+                          type="checkbox"
+                          onChange={this.handleRutaDefault}
+                          defaultChecked={this.state.RutaDefault}
+                        />
+                        {this.state.RutaDefault === true && (
+                          <label>&ensp;Generar Ruta Estática Default</label>
+                        )}
+                        {this.state.RutaDefault === false && (
+                          <span>
+                            <label className="label-light">
+                              &ensp;Generar Ruta Estática Default
+                            </label>
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {this.state.RutaDefault === true && (
+                      <span>
+                      {this.state.TipoIP !== "DHCP" && (
+                        <span>
+                        <div className="mb-2 d-flex align-items-center">
+                        
+                          <label>Next-hop</label>
+                          <input
+                            className="form-control ml-2"
+                            type="text"
+                            value={this.state.NextHop}
+                            onChange={this.handleNextHop}
+                            placeholder="xxx.xxx.xxx.xxx"
+                            required
+                          />
+                        </div>
+                      </span>
+                      )}
+                      </span>
+                     
+
+                    )}
+
+                    {this.state.Servicio === "MPLS" && (
+                      <span>
+                        {this.state.RutaDefault === false && (
+                          <span>
+                            <div className="row">
+                              <div className="col-5">
+                                <label className="mt-2 mb-2">
+                                  Agregar Rutas Estáticas Específicas
+                                </label>
+                                <div className="mb-2 d-flex align-items-center">
+                                  
+                                  <label>Red</label>
+                                  <input
+                                    className="form-control ml-2"
+                                    type="text"
+                                    value={this.state.RedRutaEstatica}
+                                    onChange={this.handleRedRutaEstatica}
+                                    placeholder="xxx.xxx.xxx.xxx"
+                                  />
+                                </div>
+
+                                <div className="mb-2 d-flex align-items-center">
+                                  
+                                  <label>Máscara de Red</label>
+                                  <input
+                                    className="form-control ml-2"
+                                    type="text"
+                                    value={this.state.MascaraRutaEstatica}
+                                    onChange={this.handleMascaraRutaEstatica}
+                                    placeholder="xxx.xxx.xxx.xxx"
+                                  />
+                                </div>
+                                {this.state.TipoIP !== "DHCP" && (
+                                  <div className="mb-2 d-flex align-items-center">
+                                   
+                                    <label>Next-hop</label>
+                                    <input
+                                      className="form-control ml-2"
+                                      type="text"
+                                      value={this.state.NextHopRutaEstatica}
+                                      onChange={this.handleNextHopRutaEstatica}
+                                      placeholder="xxx.xxx.xxx.xxx"
+                                    />
+                                  </div>
+                                )}
+
+                                <div className="row justify-content-center">
+                                  <div className="col text-center">
+                                    <button
+                                      className="m-1 p-1 btn btn-outline-primary"
+                                      onClick={this.handleAddRow}
+                                    >
+                                      Agregar Ruta
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="col size-small">
+                                {this.state.RutasEstaticas.length !== 0 && (
+                                  <span>
+                                    <div className="size-bold">
+                                      Redes Estáticas Registradas
+                                    </div>
+                                    {this.state.RutasEstaticas.map(
+                                      (ruta, i) => {
+                                        return (
+                                          <div key={i}>
+                                            {" "}
+                                            Red = {ruta.red} Máscara ={" "}
+                                            {ruta.mascara}
+                                            {this.state.TipoIP !== "DHCP" && (
+                                              <span>Next-hop = {ruta.hop}</span>
+                                            )}
+                                          </div>
+                                        );
+                                      }
+                                    )}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            <hr></hr>
+                          </span>
+                        )}
+                      </span>
+                    )}
+                  </span>
+                )}
 
                 <button className="mt-3 btn btn-outline-primary" type="submit">
                   Agregar
