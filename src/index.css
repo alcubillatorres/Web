@@ -17,7 +17,7 @@
 }
 
 .form-control{
-    padding: 0.5px !important;
+    
     width: auto !important;
     font-family: 'Open Sans', sans-serif;
 }
@@ -55,7 +55,7 @@ input{
     background: blue;
 }
 
-button{
+.btn-outline-primary{
     min-width: 60px;
 }
 
@@ -72,6 +72,10 @@ table{
     border-collapse: collapse;
     border-radius: 1em;
     overflow: hidden;
+}
+
+.mplsTable{
+    border-radius: .1em !important;
 }
 
 td, tr, th {
@@ -100,3 +104,35 @@ td, tr, th {
   {
     display: block;
   }
+
+  .th-mpls {
+   min-width: 150px;
+    
+  }
+
+  .td-plus{
+      background: rgb(80, 137, 177);
+  }
+
+  .button_plus { 
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    
+    background: #fff;
+    cursor: pointer;
+    border: 2px solid rgb(61, 138, 209);
+  }
+
+  .label-light{
+    font-weight: lighter;
+    font-style: italic;
+  }
+
+  .size-small{
+      font-size: smaller;
+  }
+
+  .size-bold{
+    font-weight: bold !important;
+}

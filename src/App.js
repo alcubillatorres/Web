@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
 
+import "bootstrap/dist/css/bootstrap.min.css";
 
 class App extends Component {
   constructor(props) {
@@ -9,7 +9,13 @@ class App extends Component {
     this.state = {
       TipoInterface: "",
       Alias: "",
-      Internet: "SI",
+      Servicio: "",
+      RutaDefault: true,
+      NextHop: "",
+      RutasEstaticas: [],
+      RedRutaEstatica: [],
+      MascaraRutaEstatica: [],
+      NextHopRutaEstatica: [],
       TipoIP: "MANUAL",
       DireccionIP: "",
       Mascara: "",
@@ -23,12 +29,14 @@ class App extends Component {
       LanDireccionIP: "",
       LanMascara: "",
       LanVlan: "",
-      DHCP: "",
+      DHCP: "SI",
       DHCPFrom: "",
       DHCPTo: "",
       LanServidorDNS1: "",
       LanServidorDNS2: "",
     };
+
+    this.handleRutaDefault = this.handleRutaDefault.bind(this);
   }
 
   componentDidMount() {
@@ -41,9 +49,9 @@ class App extends Component {
       params,
     }).then(
       (response) => {
-        this.setState({ 
+        this.setState({
           WanSaved: response.data.Wan,
-          LanSaved: response.data.Lan
+          LanSaved: response.data.Lan,
         });
       },
       (error) => {
@@ -63,9 +71,39 @@ class App extends Component {
     });
   };
 
-  handleInternet = (event) => {
+  handleServicio = (event) => {
     this.setState({
-      Internet: event.target.value,
+      Servicio: event.target.value,
+    });
+  };
+
+  handleRutaDefault = () => {
+    this.setState({
+      RutaDefault: !this.state.RutaDefault,
+    });
+  };
+
+  handleNextHop = (event) => {
+    this.setState({
+      NextHop: event.target.value,
+    });
+  };
+
+  handleRedRutaEstatica = (event) => {
+    this.setState({
+      RedRutaEstatica: event.target.value,
+    });
+  };
+
+  handleMascaraRutaEstatica = (event) => {
+    this.setState({
+      MascaraRutaEstatica: event.target.value,
+    });
+  };
+
+  handleNextHopRutaEstatica = (event) => {
+    this.setState({
+      NextHopRutaEstatica: event.target.value,
     });
   };
 
@@ -153,12 +191,32 @@ class App extends Component {
     });
   };
 
+  handleAddRow = (e) => {
+    e.preventDefault();
+    this.setState((prevState, props) => {
+      const row = {
+        red: this.state.RedRutaEstatica,
+        mascara: this.state.MascaraRutaEstatica,
+        hop: this.state.NextHopRutaEstatica,
+      };
+      return {
+        RutasEstaticas: [...prevState.RutasEstaticas, row],
+        RedRutaEstatica: "",
+        MascaraRutaEstatica: "",
+        NextHopRutaEstatica: "",
+      };
+    });
+  };
+
   handleSubmit = (event) => {
     const data = {
-      TipoInterface: this.state.TipoInterface.trim(),
+      TipoInterface: this.state.TipoInterface,
       Alias: this.state.Alias.trim(),
-      Internet: this.state.Internet.trim(),
-      TipoIP: this.state.TipoIP.trim(),
+      TipoServicio: this.state.Servicio,
+      RutaDefault: this.state.RutaDefault,
+      NextHop: this.state.NextHop.trim(),
+      RutasEstaticas: this.state.RutasEstaticas,
+      TipoIP: this.state.TipoIP,
       DireccionIP: this.state.DireccionIP.trim(),
       Mascara: this.state.Mascara.trim(),
       Gateway: this.state.Gateway.trim(),
@@ -167,12 +225,13 @@ class App extends Component {
       LanDireccionIP: this.state.LanDireccionIP.trim(),
       LanMascara: this.state.LanMascara.trim(),
       LanVlan: this.state.LanVlan.trim(),
-      LanDHCP: this.state.DHCP.trim(),
+      LanDHCP: this.state.DHCP,
       DHCPFrom: this.state.DHCPFrom.trim(),
       DHCPTo: this.state.DHCPTo.trim(),
       LanServidorDNS1: this.state.LanServidorDNS1.trim(),
       LanServidorDNS2: this.state.LanServidorDNS2.trim(),
     };
+
     const url = "http://localhost:4000";
     axios({
       method: "post",
@@ -183,7 +242,13 @@ class App extends Component {
         this.setState({
           TipoInterface: "",
           Alias: "",
-          Internet: "SI",
+          Servicio: "",
+          RutaDefault: true,
+          NextHop: "",
+          RedRutaEstatica: [],
+          MascaraRutaEstatica: [],
+          NextHopRutaEstatica: [],
+          RutasEstaticas: [],
           TipoIP: "MANUAL",
           DireccionIP: "",
           Mascara: "",
@@ -220,29 +285,71 @@ class App extends Component {
         </div>
         <form onSubmit={this.handleSubmit}>
           {this.state.WanSaved.length !== 0 && (
+            <div className="row">
+              <div className="col-6">
+                <hr></hr>
+                <label>INTERFACES WAN REGISTRADAS</label>
+                <p></p>
+                <table border="1">
+                  <thead>
+                    <tr>
+                      <th>Alias</th>
+                      <th>Tipo IP</th>
+                      <th>Direccion IP</th>
+                      <th>Mascara</th>
+                      <th>Gateway</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {this.state.WanSaved.map(function (wan, key) {
+                      return (
+                        <tr key={key}>
+                          <td>{wan.Alias}</td>
+                          <td>{wan.TipoIP}</td>
+                          <td>{wan.DireccionIP}</td>
+                          <td>{wan.Mascara}</td>
+                          <td>{wan.Gateway}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {this.state.LanSaved.length !== 0 && (
             <div>
               <hr></hr>
-              <label>INTERFACES WAN REGISTRADAS</label>
+              <label>INTERFACES LAN REGISTRADAS</label>
               <p></p>
               <table border="1">
                 <thead>
                   <tr>
                     <th>Alias</th>
-                    <th>TipoIP</th>
-                    <th>DireccionIP</th>
+                    <th>Direccion IP</th>
                     <th>Mascara</th>
-                    <th>Gateway</th>
+                    <th>VLAN</th>
+                    <th>DHCP</th>
+                    <th>Rango DHCP</th>
+                    <th>Servidor DNS 1</th>
+                    <th>Servidor DNS 2</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {this.state.WanSaved.map(function (wan, key) {
+                  {this.state.LanSaved.map(function (lan, key) {
                     return (
                       <tr key={key}>
-                        <td>{wan.Alias}</td>
-                        <td>{wan.TipoIP}</td>
-                        <td>{wan.DireccionIP}</td>
-                        <td>{wan.Mascara}</td>
-                        <td>{wan.Gateway}</td>
+                        <td>{lan.LanAlias}</td>
+                        <td>{lan.LanDireccionIP}</td>
+                        <td>{lan.LanMascara}</td>
+                        <td>{lan.LanVlan}</td>
+                        <td>{lan.LanDHCP}</td>
+                        <td>
+                          {lan.DHCPFrom}-{lan.DHCPTo}
+                        </td>
+                        <td>{lan.LanServidorDNS1}</td>
+                        <td>{lan.LanServidorDNS2}</td>
                       </tr>
                     );
                   })}
@@ -250,45 +357,6 @@ class App extends Component {
               </table>
             </div>
           )}
-
-{this.state.LanSaved.length !== 0 && (
- <div>
- <hr></hr>
- <label>INTERFACES LAN REGISTRADAS</label>
- <p></p>
- <table border="1">
-   <thead>
-     <tr>
-       <th>Alias</th>
-       <th>DireccionIP</th>
-       <th>Mascara</th>
-       <th>VLAN</th>
-       <th>DHCP</th>
-       <th>RANGO DHCP</th>
-       <th>SERVIDOR DNS 1</th>
-       <th>SERVIDOR DNS 2</th>
-     </tr>
-   </thead>
-   <tbody>
-     {this.state.LanSaved.map(function (lan, key) {
-       return (
-         <tr key={key}>
-           <td>{lan.LanAlias}</td>
-           <td>{lan.LanDireccionIP}</td>
-           <td>{lan.LanMascara}</td>
-           <td>{lan.LanVlan}</td>
-           <td>{lan.LanDHCP}</td>
-           <td>{lan.DHCPFrom}-{lan.DHCPTo}</td>
-           <td>{lan.LanServidorDNS1}</td>
-           <td>{lan.LanServidorDNS2}</td>
-         </tr>
-       );
-     })}
-   </tbody>
- </table>
-</div>
-
-)}
 
           <hr></hr>
           <label>Agregar Interface (WAN/LAN)</label>
@@ -306,7 +374,7 @@ class App extends Component {
             {this.state.TipoInterface === "WAN" && (
               <div className="align-items-center">
                 <div className="mb-2 d-flex align-items-center">
-                  <label>NOMBRE WAN (ALIAS)</label>
+                  <label>Nombre WAN (Alias)</label>
                   <input
                     className="form-control ml-2"
                     type="text"
@@ -317,19 +385,147 @@ class App extends Component {
                 </div>
 
                 <div className="mb-2">
-                  <label>INTERNET</label>
+                  {this.state.Servicio === "MPLS" && (
+                    <span>
+                      {this.state.RutaDefault === false && (
+                        <span>
+                          <hr></hr>
+                        </span>
+                      )}
+                    </span>
+                  )}
+
+                  <label>Servicio</label>
                   <select
-                    value={this.state.Internet}
-                    onChange={this.handleInternet}
+                    value={this.state.Servicio}
+                    onChange={this.handleServicio}
                     className="form-select ml-2"
                   >
-                    <option value="SI">SI</option>
-                    <option value="NO">NO</option>
+                    <option value=""></option>
+                    <option value="MPLS">MPLS</option>
+                    <option value="INTERNET">INTERNET</option>
                   </select>
                 </div>
 
+                {this.state.Servicio !== "" && (
+                  <span>
+                    <div className="mb-2 d-flex align-items-center">
+                      &emsp;&emsp;
+                      <input
+                        type="checkbox"
+                        onChange={this.handleRutaDefault}
+                        defaultChecked={this.state.RutaDefault}
+                      />
+                      {this.state.RutaDefault === true && (
+                        <label>&ensp;Generar Ruta Estática Default</label>
+                      )}
+                      {this.state.RutaDefault === false && (
+                        <label className="label-light">
+                          &ensp;Generar Ruta Estática Default
+                        </label>
+                      )}
+                    </div>
+                    {this.state.RutaDefault === true && (
+                      <span>
+                        <div className="mb-2 d-flex align-items-center">
+                          &emsp;&emsp;
+                          <label>Next-hop</label>
+                          <input
+                            className="form-control ml-2"
+                            type="text"
+                            value={this.state.NextHop}
+                            onChange={this.handleNextHop}
+                            placeholder="xxx.xxx.xxx.xxx"
+                            required
+                          />
+                        </div>
+                      </span>
+                    )}
+
+                    {this.state.Servicio === "MPLS" && (
+                      <span>
+                        {this.state.RutaDefault === false && (
+                          <span>
+                            <div className="row">
+                              <div className="col-5">
+                                <div className="mb-2 d-flex align-items-center">
+                                  &emsp;&emsp;
+                                  <label>Red</label>
+                                  <input
+                                    className="form-control ml-2"
+                                    type="text"
+                                    value={this.state.RedRutaEstatica}
+                                    onChange={this.handleRedRutaEstatica}
+                                    placeholder="xxx.xxx.xxx.xxx"
+                                  />
+                                </div>
+
+                                <div className="mb-2 d-flex align-items-center">
+                                  &emsp;&emsp;
+                                  <label>Máscara de Red</label>
+                                  <input
+                                    className="form-control ml-2"
+                                    type="text"
+                                    value={this.state.MascaraRutaEstatica}
+                                    onChange={this.handleMascaraRutaEstatica}
+                                    placeholder="xxx.xxx.xxx.xxx"
+                                  />
+                                </div>
+
+                                <div className="mb-2 d-flex align-items-center">
+                                  &emsp;&emsp;
+                                  <label>Next-hop</label>
+                                  <input
+                                    className="form-control ml-2"
+                                    type="text"
+                                    value={this.state.NextHopRutaEstatica}
+                                    onChange={this.handleNextHopRutaEstatica}
+                                    placeholder="xxx.xxx.xxx.xxx"
+                                  />
+                                </div>
+
+                                <div className="row justify-content-center">
+                                  <div className="col text-center">
+                                    <button
+                                      className="m-1 p-1 btn btn-outline-primary"
+                                      onClick={this.handleAddRow}
+                                    >
+                                      Generar
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="col size-small">
+                                {this.state.RutasEstaticas.length !== 0 && (
+                                  <span>
+                                    <div className="size-bold">
+                                      Redes Estáticas Registradas
+                                    </div>
+                                    {this.state.RutasEstaticas.map(
+                                      (ruta, i) => {
+                                        return (
+                                          <div key={i}>
+                                            {" "}
+                                            Red = {ruta.red} Máscara ={" "}
+                                            {ruta.mascara} Next-hop = {ruta.hop}
+                                          </div>
+                                        );
+                                      }
+                                    )}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            <hr></hr>
+                          </span>
+                        )}
+                      </span>
+                    )}
+                  </span>
+                )}
+
                 <div className="mb-2">
-                  <label>TIPO DE IP</label>
+                  <label>Tipo de IP</label>
                   <select
                     value={this.state.TipoIP}
                     onChange={this.handleTipoIP}
@@ -343,7 +539,7 @@ class App extends Component {
                 {this.state.TipoIP === "MANUAL" && (
                   <span>
                     <div className="mb-2 d-flex align-items-center">
-                      <label>DIRECCION IP</label>
+                      <label>Dirección IP</label>
                       <input
                         className="form-control ml-2"
                         type="text"
@@ -355,7 +551,7 @@ class App extends Component {
                     </div>
 
                     <div className="mb-2 d-flex align-items-center">
-                      <label>MASCARA DE RED</label>
+                      <label>Máscara de Red</label>
                       <input
                         className="form-control ml-2"
                         type="text"
@@ -367,7 +563,7 @@ class App extends Component {
                     </div>
 
                     <div className="mb-2 d-flex align-items-center">
-                      <label>GATEWAY</label>
+                      <label>Gateway</label>
                       <input
                         className="form-control ml-2"
                         type="text"
@@ -402,10 +598,9 @@ class App extends Component {
           </span>
           {this.state.TipoInterface === "LAN" && (
             <div>
-
               <div className="align-items-center">
                 <div className="mb-2 d-flex align-items-center">
-                  <label>NOMBRE LAN (ALIAS)</label>
+                  <label>Nombre LAN (Alias)</label>
                   <input
                     className="form-control ml-2 d-flex align-items-center"
                     type="text"
@@ -413,15 +608,15 @@ class App extends Component {
                     onChange={this.handleLanAlias}
                     required
                   />
-    
-                  <span className="tc-img">Nombre con la que se va a identificar a la interface</span>
 
+                  <span className="tc-img">
+                    Nombre con la que se va a identificar a la interface
+                  </span>
                 </div>
 
                 <div className="mb-2 d-flex align-items-center">
-                  <label>DIRECCION IP</label>
+                  <label>Dirección IP</label>
                   <input
-  
                     className="form-control ml-2"
                     type="text"
                     value={this.state.LanDireccionIP}
@@ -429,12 +624,13 @@ class App extends Component {
                     placeholder="xxx.xxx.xxx.xxx"
                     required
                   />
-                    <span className="tc-img">Direccion IP de la interface del firewall</span>
-
+                  <span className="tc-img">
+                    Direccion IP de la interface del firewall
+                  </span>
                 </div>
 
                 <div className="mb-2 d-flex align-items-center">
-                  <label>MASCARA DE RED</label>
+                  <label>Máscara de Red</label>
                   <input
                     className="form-control ml-2"
                     type="text"
@@ -458,74 +654,79 @@ class App extends Component {
                 </div>
 
                 <div className="select-control mb-2 d-flex align-items-center">
-                  <label>ENTREGA DHCP</label>
+                  <label>Entrega DHCP</label>
                   <select
-                  
                     value={this.state.DHCP}
                     onChange={this.handleDHCP}
                     className="form-select ml-2"
                   >
-                    <option value="SI">SI</option>
-                    <option value="NO">NO</option>
+                    <option value="SI">Sí</option>
+                    <option value="NO">No</option>
                   </select>
-                  <span className="tc-img">Seleccionar "SI" en caso de que la interface entregue DHCP
-                  </span>
-                
-
-                </div>
-
-                <div className="mb-2 d-flex align-items-center">
-                  <label>RANGO DE DHCP</label>
-                  <input
-                    className="form-control ml-2"
-                    type="text"
-                    value={this.state.DHCPFrom}
-                    onChange={this.handleDHCPFrom}
-                    placeholder="xxx.xxx.xxx.xxx"
-                    required
-                  />
-                   <input
-                    className="form-control ml-2"
-                    type="text"
-                    value={this.state.DHCPTo}
-                    onChange={this.handleDHCPTo}
-                    placeholder="xxx.xxx.xxx.xxx"
-                    required
-                  />
                   <span className="tc-img">
-                  Rango de direcciones IP que serán entregadas
+                    Seleccionar "Sí" en caso de que la interface entregue DHCP
                   </span>
                 </div>
+                {this.state.DHCP === "SI" && (
+                  <span>
+                    <div className="mb-2 d-flex align-items-center">
+                      <label>Rango de DHCP</label>
+                      <input
+                        className="form-control ml-2"
+                        type="text"
+                        value={this.state.DHCPFrom}
+                        onChange={this.handleDHCPFrom}
+                        placeholder="xxx.xxx.xxx.xxx"
+                        required
+                      />
+                      <input
+                        className="form-control ml-2"
+                        type="text"
+                        value={this.state.DHCPTo}
+                        onChange={this.handleDHCPTo}
+                        placeholder="xxx.xxx.xxx.xxx"
+                        required
+                      />
+                      <span className="tc-img">
+                        Rango de direcciones IP que serán entregadas
+                      </span>
+                    </div>
 
-                <div className="mb-2 d-flex align-items-center">
-                  <label>SERVIDOR DNS 1</label>
-                  <input
-                    className="form-control ml-2"
-                    type="text"
-                    value={this.state.LanServidorDNS1}
-                    onChange={this.handleLanServidorDNS1}
-                    placeholder="xxx.xxx.xxx.xxx"
-                    required
-                  />
-                  <span className="tc-img">Seleccionar si se desea usar el servidor DNS de Axtel (207.248.224.71) o especificar cual se desea usar en el DHCP</span>
-                </div>
+                    <div className="mb-2 d-flex align-items-center">
+                      <label>Servidor DNS 1</label>
+                      <input
+                        className="form-control ml-2"
+                        type="text"
+                        value={this.state.LanServidorDNS1}
+                        onChange={this.handleLanServidorDNS1}
+                        placeholder="xxx.xxx.xxx.xxx"
+                        required
+                      />
+                      <span className="tc-img">
+                        Seleccionar si se desea usar el servidor DNS de Axtel
+                        (207.248.224.71) o especificar cual se desea usar en el
+                        DHCP
+                      </span>
+                    </div>
 
-                <div className="mb-2 d-flex align-items-center">
-                  <label>SERVIDOR DNS 2</label>
-                  <input
-                    className="form-control ml-2"
-                    type="text"
-                    value={this.state.LanServidorDNS2}
-                    onChange={this.handleLanServidorDNS2}
-                    placeholder="xxx.xxx.xxx.xxx"
-                    required
-                  />  
-                  <span className="tc-img">
-                  Seleccionar si se desea usar el servidor DNS de Axtel (207.248.224.71) o especificar cual se desea usar en el DHCP.
+                    <div className="mb-2 d-flex align-items-center">
+                      <label>Servidor DNS 2</label>
+                      <input
+                        className="form-control ml-2"
+                        type="text"
+                        value={this.state.LanServidorDNS2}
+                        onChange={this.handleLanServidorDNS2}
+                        placeholder="xxx.xxx.xxx.xxx"
+                        required
+                      />
+                      <span className="tc-img">
+                        Seleccionar si se desea usar el servidor DNS de Axtel
+                        (207.248.224.71) o especificar cual se desea usar en el
+                        DHCP.
+                      </span>
+                    </div>
                   </span>
-
-
-                </div>
+                )}
 
                 <button className="mt-3 btn btn-outline-primary" type="submit">
                   Agregar
