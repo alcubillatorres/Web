@@ -126,7 +126,7 @@ td, tr, th {
 
   .label-light{
     font-weight: lighter;
-    font-style: italic;
+    font-style: igtalic;
   }
 
   .size-small{
@@ -135,4 +135,8 @@ td, tr, th {
 
   .size-bold{
     font-weight: bold !important;
+}
+
+.green-input{
+    background-color: rgb(140, 212, 140) !important;
 }
